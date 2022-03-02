@@ -12,6 +12,7 @@ import {
   TrendingUp,
   WorkOutline,
 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 import "./sidebar.css";
 
 export default function Sidebar() {
@@ -21,10 +22,12 @@ export default function Sidebar() {
         <div className="sidebarMenu">
           <h3 className="sidebarTitle">Админ панель</h3>
           <ul className="sidebarList">
-            <li className="sidebarListItem active">
-              <LineStyle className="sidebarIcon" />
-              Главная
-            </li>
+            <Link className="link" to="/">
+              <li className="sidebarListItem active">
+                <LineStyle className="sidebarIcon" />
+                Главная
+              </li>
+            </Link>
             <li className="sidebarListItem">
               <Timeline className="sidebarIcon" />
               Анализ
@@ -38,14 +41,18 @@ export default function Sidebar() {
         <div className="sidebarMenu">
           <h3 className="sidebarTitle">Быстрое меню</h3>
           <ul className="sidebarList">
-            <li className="sidebarListItem">
-              <PermIdentity className="sidebarIcon" />
-              Пользователи
-            </li>
-            <li className="sidebarListItem">
-              <Storefront className="sidebarIcon" />
-              Продукты
-            </li>
+            <Link className="link" to="/users">
+              <li className="sidebarListItem">
+                <PermIdentity className="sidebarIcon" />
+                Пользователи
+              </li>
+            </Link>
+            <Link className="link" to="/products">
+              <li className="sidebarListItem">
+                <Storefront className="sidebarIcon" />
+                Продукты
+              </li>
+            </Link>
             <li className="sidebarListItem">
               <AttachMoney className="sidebarIcon" />
               Операции
