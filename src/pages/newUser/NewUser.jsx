@@ -1,9 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import "./newUser.css";
 
 export default function NewUser() {
+  const navigate = useNavigate();
+  const goBack = () => navigate(-1);
+
   return (
     <div className="newUser">
-      <h1 className="newUserTitle">Новый пользователь</h1>
+      <div className="newUserTitleContainer">
+        <h1 className="newUserTitle">Новый пользователь</h1>
+        <button className="goBack" onClick={goBack}>
+          Назад
+        </button>
+      </div>
       <form className="newUserForm">
         <div className="newUserItem">
           <label className="newUserLabel">Имя пользователя</label>

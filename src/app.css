@@ -7,3 +7,15 @@
   text-decoration: none;
   color: inherit;
 }
+
+.goBack {
+  width: 80px;
+  border: none;
+  padding: 5px;
+  background-color: #9dbcff;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}

@@ -4,6 +4,7 @@
   background-color: rgb(235, 235, 255);
   position: sticky;
   top: 50px;
+  margin-top: -10px;
 }
 
 .sidebarWrapper {
@@ -24,16 +25,20 @@
   padding: 5px;
 }
 
-.sidebarListItem {
-  padding: 5px;
+.navLink {
   cursor: pointer;
-  display: flex;
-  align-items: center;
   border-radius: 10px;
+  display: block;
 }
 
-.sidebarListItem.active,
-.sidebarListItem:hover {
+.sidebarListItem {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.navLink.active,
+.navLink:hover {
   background-color: rgb(219, 219, 248);
 }
 

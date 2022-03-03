@@ -3,6 +3,12 @@
   padding: 20px;
 }
 
+.newUserTitleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .newUserForm {
   display: flex;
   flex-wrap: wrap;

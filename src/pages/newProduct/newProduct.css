@@ -3,6 +3,12 @@
   padding: 20px;
 }
 
+.addProductTitleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .addProductForm {
   margin-top: 10px;
 }
