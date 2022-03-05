@@ -1,86 +1,41 @@
-import { Visibility } from "@mui/icons-material";
 import "./widgetSm.css";
+import { Visibility } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import { userRequest } from "../../requestMethods";
 
 export default function WidgetSm() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const res = await userRequest.get("users/?new=true");
+        setUsers(res.data);
+      } catch {}
+    };
+    getUsers();
+  }, []);
+
   return (
     <div className="widgetSm">
       <span className="widgetSmTitle">Новые пользователи</span>
       <ul className="widgetSmList">
-        <li className="widgetSmItem">
-          <img
-            className="widgetSmImg"
-            src="http://unsplash.it/45/45"
-            alt="User Avatar"
-          />
-          <div className="widgetSmUser">
-            <span className="widgetSmUserName">Ivan Petrov</span>
-            <span className="widgetSmUserTitle">Инженер программист</span>
-          </div>
-          <button className="widgetSmButton">
-            <Visibility className="widgetSmIcon" />
-            Показать
-          </button>
-        </li>
-        <li className="widgetSmItem">
-          <img
-            className="widgetSmImg"
-            src="http://unsplash.it/46/45"
-            alt="User Avatar"
-          />
-          <div className="widgetSmUser">
-            <span className="widgetSmUserName">Ivan Petrov</span>
-            <span className="widgetSmUserTitle">Инженер программист</span>
-          </div>
-          <button className="widgetSmButton">
-            <Visibility className="widgetSmIcon" />
-            Показать
-          </button>
-        </li>
-        <li className="widgetSmItem">
-          <img
-            className="widgetSmImg"
-            src="http://unsplash.it/45/46"
-            alt="User Avatar"
-          />
-          <div className="widgetSmUser">
-            <span className="widgetSmUserName">Ivan Petrov</span>
-            <span className="widgetSmUserTitle">Инженер программист</span>
-          </div>
-          <button className="widgetSmButton">
-            <Visibility className="widgetSmIcon" />
-            Показать
-          </button>
-        </li>
-        <li className="widgetSmItem">
-          <img
-            className="widgetSmImg"
-            src="http://unsplash.it/46/46"
-            alt="User Avatar"
-          />
-          <div className="widgetSmUser">
-            <span className="widgetSmUserName">Ivan Petrov</span>
-            <span className="widgetSmUserTitle">Инженер программист</span>
-          </div>
-          <button className="widgetSmButton">
-            <Visibility className="widgetSmIcon" />
-            Показать
-          </button>
-        </li>
-        <li className="widgetSmItem">
-          <img
-            className="widgetSmImg"
-            src="http://unsplash.it/44/45"
-            alt="User Avatar"
-          />
-          <div className="widgetSmUser">
-            <span className="widgetSmUserName">Ivan Petrov</span>
-            <span className="widgetSmUserTitle">Инженер программист</span>
-          </div>
-          <button className="widgetSmButton">
-            <Visibility className="widgetSmIcon" />
-            Показать
-          </button>
-        </li>
+        {users.map((user) => (
+          <li className="widgetSmItem" key={user._id}>
+            <img
+              className="widgetSmImg"
+              src={user.img || "http://unsplash.it/45/45"}
+              alt="User Avatar"
+            />
+            <div className="widgetSmUser">
+              <span className="widgetSmUserName">{user.username}</span>
+            </div>
+            <button className="widgetSmButton">
+              <Visibility className="widgetSmIcon" />
+              Показать
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
   );

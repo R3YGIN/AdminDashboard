@@ -35,9 +35,7 @@ export default function NewUser() {
           />
         </div>
         <div className="newUserItem">
-          <labe className="newUserLabel" l>
-            Пароль
-          </labe>
+          <label className="newUserLabel">Пароль</label>
           <input
             className="newUserInput"
             type="password"
@@ -70,7 +68,7 @@ export default function NewUser() {
               id="male"
               value="male"
             />
-            <label className="newUserGenderLabel" for="male">
+            <label className="newUserGenderLabel" htmlFor="male">
               Мужчина
             </label>
             <input
@@ -80,7 +78,7 @@ export default function NewUser() {
               id="female"
               value="female"
             />
-            <label className="newUserGenderLabel" for="female">
+            <label className="newUserGenderLabel" htmlFor="female">
               Женщина
             </label>
             <input
@@ -90,7 +88,7 @@ export default function NewUser() {
               id="other"
               value="other"
             />
-            <label className="newUserGenderLabel" for="other">
+            <label className="newUserGenderLabel" htmlFor="other">
               Другой
             </label>
           </div>
