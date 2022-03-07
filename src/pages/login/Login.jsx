@@ -8,9 +8,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
-    login(dispatch, { username, password });
+    await login(dispatch, { username, password });
+    await window.location.reload();
   };
 
   return (

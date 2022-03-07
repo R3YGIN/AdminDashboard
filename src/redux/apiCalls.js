@@ -1,3 +1,4 @@
+import { async } from "@firebase/util";
 import { publicRequest, userRequest } from "../requestMethods";
 import {
   getProductFailure,
@@ -13,7 +14,7 @@ import {
   addProductStart,
   addProductSuccess,
 } from "./productRedux";
-import { loginFailure, loginStart, loginSuccess } from "./userRedux";
+import { loginFailure, loginStart, loginSuccess, logout } from "./userRedux";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -23,6 +24,10 @@ export const login = async (dispatch, user) => {
   } catch (err) {
     dispatch(loginFailure());
   }
+};
+
+export const logoutFunc = async (dispatch) => {
+  dispatch(logout());
 };
 
 export const getProducts = async (dispatch) => {
