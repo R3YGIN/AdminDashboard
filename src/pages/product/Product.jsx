@@ -3,9 +3,17 @@ import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import Chart from "../../components/chart/Chart";
-import { productData } from "../../dummyData";
 import { userRequest } from "../../requestMethods";
 import "./product.css";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import app from "../../firebase";
+import { updateProduct } from "../../redux/apiCalls";
+import { useDispatch } from "react-redux";
 
 export default function Product() {
   const location = useLocation();
@@ -54,6 +62,67 @@ export default function Product() {
     getStats();
   }, [productId, MONTHS]);
 
+  const [inputs, setInputs] = useState({});
+  const [file, setFile] = useState(null);
+  const [category, setCategory] = useState([]);
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setInputs((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+  const handleCategory = (e) => {
+    setCategory(e.target.value.split(","));
+  };
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    const fileName = new Date().getTime() + file.name;
+    const storage = getStorage(app);
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    // Register three observers:
+    // 1. 'state_changed' observer, called any time the state changes
+    // 2. Error observer, called on failure
+    // 3. Completion observer, called on successful completion
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+          default:
+        }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+      },
+      () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          const product = {
+            ...inputs,
+            img: downloadURL,
+            categories: category,
+          };
+          updateProduct(productId, product, dispatch);
+        });
+      }
+    );
+  };
+
   return (
     <div className="product">
       <div className="productTitleContainer">
@@ -100,6 +169,7 @@ export default function Product() {
               name="title"
               type="text"
               placeholder={product.title}
+              onChange={handleChange}
             />
             <label className="productFormLeftLabel">Описание продукта</label>
             <input
@@ -107,6 +177,7 @@ export default function Product() {
               name="desc"
               type="text"
               placeholder={product.desc}
+              onChange={handleChange}
             />
             <label className="productFormLeftLabel">Цена</label>
             <input
@@ -114,6 +185,7 @@ export default function Product() {
               name="price"
               type="text"
               placeholder={product.price}
+              onChange={handleChange}
             />
             <label className="productFormLeftLabel">Категория</label>
             <input
@@ -121,12 +193,14 @@ export default function Product() {
               name="price"
               type="text"
               placeholder={product.categories}
+              onChange={handleCategory}
             />
             <label className="productFormLeftLabel">В наличии</label>
             <select
               className="productFormLeftSelect"
               name="inStock"
               id="idStock"
+              onChange={handleChange}
             >
               <option value="true">Да</option>
               <option value="false">Нет</option>
@@ -142,9 +216,16 @@ export default function Product() {
               <label htmlFor="file">
                 <Publish className="productUploadIcon" />
               </label>
-              <input type="file" id="file" style={{ display: "none" }} />
+              <input
+                type="file"
+                id="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                style={{ display: "none" }}
+              />
             </div>
-            <button className="productButton">Обновить</button>
+            <button className="productButton" onClick={handleClick}>
+              Обновить
+            </button>
           </div>
         </form>
       </div>
