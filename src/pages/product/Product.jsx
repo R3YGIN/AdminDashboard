@@ -62,9 +62,18 @@ export default function Product() {
     getStats();
   }, [productId, MONTHS]);
 
-  const [inputs, setInputs] = useState({});
+  const { title, desc, price, categories, inStock, img } = useSelector(
+    (state) => state.product.products.find(({ _id }) => _id === productId)
+  );
+  const [inputs, setInputs] = useState({
+    title,
+    desc,
+    price,
+    inStock,
+    img,
+  });
   const [file, setFile] = useState(null);
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState([...categories]);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -123,6 +132,15 @@ export default function Product() {
     );
   };
 
+  const handleClickNoImg = (e) => {
+    e.preventDefault();
+    const product = {
+      ...inputs,
+      categories: category,
+    };
+    updateProduct(productId, product, dispatch);
+  };
+
   return (
     <div className="product">
       <div className="productTitleContainer">
@@ -151,11 +169,15 @@ export default function Product() {
             </div>
             <div className="productInfoItem">
               <span className="productInfoKey">продажи:</span>
-              <span className="productInfoValue">3123</span>
+              <span className="productInfoValue">
+                {pStats.reduce((acc, cur) => acc + cur.Sales, 0)}
+              </span>
             </div>
             <div className="productInfoItem">
               <span className="productInfoKey">в наличии:</span>
-              <span className="productInfoValue">{product.inStock}</span>
+              <span className="productInfoValue">
+                {product.inStock ? "Да" : "Нет"}
+              </span>
             </div>
           </div>
         </div>
@@ -223,7 +245,10 @@ export default function Product() {
                 style={{ display: "none" }}
               />
             </div>
-            <button className="productButton" onClick={handleClick}>
+            <button
+              className="productButton"
+              onClick={file ? handleClick : handleClickNoImg}
+            >
               Обновить
             </button>
           </div>
