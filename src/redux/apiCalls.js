@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import { publicRequest, userRequest } from "../requestMethods";
 import {
   getProductFailure,
@@ -15,6 +14,20 @@ import {
   addProductSuccess,
 } from "./productRedux";
 import { loginFailure, loginStart, loginSuccess, logout } from "./userRedux";
+import {
+  getAccountStart,
+  getAccountSuccess,
+  getAccountFailure,
+  deleteAccountStart,
+  deleteAccountSuccess,
+  deleteAccountFailure,
+  updateAccountStart,
+  updateAccountSuccess,
+  updateAccountFailure,
+  addAccountStart,
+  addAccountSuccess,
+  addAccountFailure,
+} from "./accountRedux";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -40,6 +53,16 @@ export const getProducts = async (dispatch) => {
   }
 };
 
+export const getAccounts = async (dispatch) => {
+  dispatch(getAccountStart());
+  try {
+    const res = await userRequest.get("/users");
+    dispatch(getAccountSuccess(res.data));
+  } catch (err) {
+    dispatch(getAccountFailure());
+  }
+};
+
 export const deleteProduct = async (id, dispatch) => {
   dispatch(deleteProductStart());
   try {
@@ -47,6 +70,16 @@ export const deleteProduct = async (id, dispatch) => {
     dispatch(deleteProductSuccess(id));
   } catch (err) {
     dispatch(deleteProductFailure());
+  }
+};
+
+export const deleteAccount = async (id, dispatch) => {
+  dispatch(deleteAccountStart());
+  try {
+    // const res = await userRequest.delete(`/users/${id}`);
+    dispatch(deleteAccountSuccess(id));
+  } catch (err) {
+    dispatch(deleteAccountFailure());
   }
 };
 
@@ -60,6 +93,16 @@ export const updateProduct = async (id, product, dispatch) => {
   }
 };
 
+export const updateAccount = async (id, account, dispatch) => {
+  dispatch(updateAccountStart());
+  try {
+    const res = await userRequest.put(`/users/${id}`, account);
+    dispatch(updateAccountSuccess({ account }));
+  } catch (err) {
+    dispatch(updateAccountFailure());
+  }
+};
+
 export const addProduct = async (product, dispatch) => {
   dispatch(addProductStart());
   try {
@@ -67,5 +110,15 @@ export const addProduct = async (product, dispatch) => {
     dispatch(addProductSuccess(res.data));
   } catch (err) {
     dispatch(addProductFailure());
+  }
+};
+
+export const createAccount = async (account, dispatch) => {
+  dispatch(addAccountStart());
+  try {
+    const res = await userRequest.post(`/auth/register/`, account);
+    dispatch(addAccountSuccess(res.data));
+  } catch (err) {
+    dispatch(addAccountFailure());
   }
 };

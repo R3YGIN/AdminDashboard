@@ -1,15 +1,50 @@
 import {
   CalendarToday,
-  LocationSearching,
   MailOutline,
+  Password,
   PermIdentity,
-  PhoneAndroid,
   Publish,
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { updateAccount } from "../../redux/apiCalls";
 import "./user.css";
 
 export default function User() {
+  const location = useLocation();
+  const accountId = location.pathname.split("/")[2];
+
+  const account = useSelector((state) =>
+    state.account.accounts.find((account) => account._id === accountId)
+  );
+
+  const { username, email } = useSelector((state) =>
+    state.account.accounts.find(({ _id }) => _id === accountId)
+  );
+  const [inputs, setInputs] = useState({
+    username,
+    email,
+    isAdmin: false,
+  });
+
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setInputs((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
+  const navigate = useNavigate();
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const account = { ...inputs };
+    await updateAccount(accountId, account, dispatch);
+    await navigate(-1);
+  };
+
   return (
     <div className="user">
       <div className="userTitleContainer">
@@ -21,38 +56,43 @@ export default function User() {
       <div className="userContainer">
         <div className="userShow">
           <div className="userShowTop">
-            <img
-              className="userShowImg"
-              src="http://unsplash.it/50/50"
-              alt="User Avatar"
-            />
+            <PermIdentity className="userShowIcon" />
             <div className="userShowTopTitle">
-              <span className="userShowUserName">Иван Петров</span>
-              <span className="userShowUserTitle">Инженер программист</span>
+              <span className="userShowUserName">{account.username}</span>
             </div>
           </div>
           <div className="userShowBottom">
             <span className="userShowTitle">Данные аккаунта</span>
             <div className="userShowInfo">
               <PermIdentity className="userShowIcon" />
-              <span className="userShowInfoTitle">petrov777</span>
+              <span className="userShowInfoTitle">
+                <b>Имя пользователя:</b> {account.username}
+              </span>
             </div>
             <div className="userShowInfo">
               <CalendarToday className="userShowIcon" />
-              <span className="userShowInfoTitle">13.01.2000</span>
+              <span className="userShowInfoTitle">
+                <b>Дата регистрации:</b> {account.createdAt}
+              </span>
+            </div>
+            <div className="userShowInfo">
+              <CalendarToday className="userShowIcon" />
+              <span className="userShowInfoTitle">
+                <b>Админ:</b> {"" + account.isAdmin}
+              </span>
+            </div>
+            <div className="userShowInfo">
+              <Password className="userShowIcon" />
+              <span className="userShowInfoTitle">
+                <b>Пароль:</b>{" "}
+              </span>
             </div>
             <span className="userShowTitle">Контактные данные</span>
             <div className="userShowInfo">
-              <PhoneAndroid className="userShowIcon" />
-              <span className="userShowInfoTitle">+7 999 655 56 56</span>
-            </div>
-            <div className="userShowInfo">
               <MailOutline className="userShowIcon" />
-              <span className="userShowInfoTitle">petrov777@mail.ru</span>
-            </div>
-            <div className="userShowInfo">
-              <LocationSearching className="userShowIcon" />
-              <span className="userShowInfoTitle">Ростов-на-Дону, Россия</span>
+              <span className="userShowInfoTitle">
+                <b>Почта:</b> {account.email}
+              </span>
             </div>
           </div>
         </div>
@@ -65,15 +105,9 @@ export default function User() {
                 <input
                   className="userUpdateInput"
                   type="text"
-                  placeholder="petrov777"
-                />
-              </div>
-              <div className="userUpdateItem">
-                <label className="userUpdateLabel">Имя Фамилия</label>
-                <input
-                  className="userUpdateInput"
-                  type="text"
-                  placeholder="Иван Петров"
+                  name="username"
+                  placeholder={account.username}
+                  onChange={handleChange}
                 />
               </div>
               <div className="userUpdateItem">
@@ -81,27 +115,33 @@ export default function User() {
                 <input
                   className="userUpdateInput"
                   type="text"
-                  placeholder="petrov777@mail.ru"
+                  name="email"
+                  placeholder={account.email}
+                  onChange={handleChange}
                 />
               </div>
               <div className="userUpdateItem">
-                <label className="userUpdateLabel">Телефон</label>
-                <input
-                  className="userUpdateInput"
-                  type="text"
-                  placeholder="+7 999 655 56 56"
-                />
+                <label className="userUpdateLabel">Админ</label>
+                <select className="userUpdateSelect" name="isAdmin">
+                  <option value="false">Нет</option>
+                  <option value="true">Да</option>
+                </select>
               </div>
               <div className="userUpdateItem">
-                <label className="userUpdateLabel">Адрес</label>
+                <label className="userUpdateLabel">Пароль</label>
                 <input
                   className="userUpdateInput"
                   type="text"
-                  placeholder="Ростов-на-Дону, Россия"
+                  name="password"
+                  placeholder="новый пароль"
+                  // onChange={handleChange} //ДОБАВИТЬ
                 />
               </div>
+              <button className="userUpdateButton" onClick={handleClick}>
+                Обновить
+              </button>
             </div>
-            <div className="userUpdateRight">
+            {/* <div className="userUpdateRight">
               <div className="userUpdateUpload">
                 <img
                   className="userUpdateImg"
@@ -113,8 +153,7 @@ export default function User() {
                 </label>
                 <input type="file" id="file" style={{ display: "none" }} />
               </div>
-              <button className="userUpdateButton">Обновить</button>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>

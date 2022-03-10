@@ -1,7 +1,7 @@
 import { Publish } from "@mui/icons-material";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Chart from "../../components/chart/Chart";
 import { userRequest } from "../../requestMethods";
 import "./product.css";
@@ -132,13 +132,16 @@ export default function Product() {
     );
   };
 
-  const handleClickNoImg = (e) => {
+  const navigate = useNavigate();
+
+  const handleClickNoImg = async (e) => {
     e.preventDefault();
     const product = {
       ...inputs,
       categories: category,
     };
-    updateProduct(productId, product, dispatch);
+    await updateProduct(productId, product, dispatch);
+    await navigate(-1);
   };
 
   return (
