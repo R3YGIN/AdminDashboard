@@ -76,7 +76,7 @@ export const deleteProduct = async (id, dispatch) => {
 export const deleteAccount = async (id, dispatch) => {
   dispatch(deleteAccountStart());
   try {
-    // const res = await userRequest.delete(`/users/${id}`);
+    const res = await userRequest.delete(`/users/${id}`);
     dispatch(deleteAccountSuccess(id));
   } catch (err) {
     dispatch(deleteAccountFailure());

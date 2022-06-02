@@ -53,17 +53,17 @@ export default function Sidebar() {
                 Продукты
               </li>
             </NavLink>
-            <li className="sidebarListItem">
+            {/* <li className="sidebarListItem">
               <AttachMoney className="sidebarIcon" />
               Операции
             </li>
             <li className="sidebarListItem">
               <BarChart className="sidebarIcon" />
               Отчеты
-            </li>
+            </li> */}
           </ul>
         </div>
-        <div className="sidebarMenu">
+        {/* <div className="sidebarMenu">
           <h3 className="sidebarTitle">Уведомления</h3>
           <ul className="sidebarList">
             <li className="sidebarListItem">
@@ -96,7 +96,7 @@ export default function Sidebar() {
               Жалобы
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

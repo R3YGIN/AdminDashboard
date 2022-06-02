@@ -22,6 +22,7 @@ export default function NewUser() {
     e.preventDefault();
     const account = { ...inputs };
     createAccount(account, dispatch);
+    navigate("/users");
   };
 
   return (

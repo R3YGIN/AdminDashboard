@@ -5,14 +5,17 @@ import "./featuredInfo.css";
 
 export default function FeaturedInfo() {
   const [income, setIncome] = useState([]);
-  const [perc, setPerc] = useState(0);
+  const [perc, setPerc] = useState({ curr: 0, prev: 0 });
 
   useEffect(() => {
     const getIncome = async () => {
       try {
         const res = await userRequest.get("orders/income");
-        setIncome(res.data);
-        setPerc((res.data[1].total * 100) / res.data[0].total - 100);
+        setIncome(res.data.sort((a, b) => a._id - b._id));
+        setPerc({
+          curr: (res.data[1].total * 100) / res.data[0].total,
+          prev: (res.data[0].total * 100) / res.data[1].total,
+        });
       } catch {}
     };
     getIncome();
@@ -27,8 +30,8 @@ export default function FeaturedInfo() {
         <div className="featuredMoneyContainer">
           <span className="featuredMoney">{income[1]?.total}р.</span>
           <span className="featuredMoneyRate">
-            %{Math.floor(perc)}
-            {perc < 0 ? (
+            %{Math.floor(perc.curr)}
+            {perc.prev > perc.curr ? (
               <ArrowDownward className="featuredIcon negative" />
             ) : (
               <ArrowUpward className="featuredIcon" />
@@ -40,22 +43,32 @@ export default function FeaturedInfo() {
       <div className="featuredItem">
         <span className="featuredTitle">Продажи</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">10000р.</span>
+          <span className="featuredMoney">{income[1]?.total}р.</span>
           <span className="featuredMoneyRate">
-            -5.7 <ArrowDownward className="featuredIcon negative" />
+            %{Math.floor(perc.curr)}
+            {perc.prev > perc.curr ? (
+              <ArrowDownward className="featuredIcon negative" />
+            ) : (
+              <ArrowUpward className="featuredIcon" />
+            )}
           </span>
         </div>
         <span className="featuredSub">По сравнению с прошлым месяцем</span>
       </div>
       <div className="featuredItem">
-        <span className="featuredTitle">Стоимость</span>
+        <span className="featuredTitle">За прошлый месяц</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">5350р.</span>
+          <span className="featuredMoney">{income[0]?.total}р.</span>
           <span className="featuredMoneyRate">
-            +3.7 <ArrowUpward className="featuredIcon" />
+            %{Math.floor(perc.prev)}
+            {perc.prev < perc.curr ? (
+              <ArrowDownward className="featuredIcon negative" />
+            ) : (
+              <ArrowUpward className="featuredIcon" />
+            )}
           </span>
         </div>
-        <span className="featuredSub">По сравнению с прошлым месяцем</span>
+        <span className="featuredSub">По сравнению с текущим месяцем</span>
       </div>
     </div>
   );

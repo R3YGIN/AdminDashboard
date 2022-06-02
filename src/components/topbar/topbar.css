@@ -26,6 +26,10 @@
   align-items: center;
 }
 
+.topbarUser {
+  margin-right: 1vw;
+}
+
 .topbarIconContainer {
   position: relative;
   cursor: pointer;

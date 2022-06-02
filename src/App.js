@@ -12,7 +12,7 @@ import Login from "./pages/login/Login";
 
 function App() {
   const user =
-    JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
+    JSON.parse(JSON.parse(localStorage.getItem("persist:admin-dashboard")).user)
       .currentUser || "noAuth";
   const admin = user.isAdmin;
   console.log(admin);

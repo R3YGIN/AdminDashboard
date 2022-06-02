@@ -2,7 +2,7 @@ import React from "react";
 import "./topbar.css";
 import { Language, NotificationsNone, Settings } from "@mui/icons-material";
 import { logoutFunc } from "../../redux/apiCalls";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Topbar() {
   const dispatch = useDispatch();
@@ -11,6 +11,8 @@ export default function Topbar() {
     await logoutFunc(dispatch);
     await await window.location.reload();
   };
+  const user = useSelector((state) => state.user.currentUser);
+  console.log(user);
 
   return (
     <div className="topbar">
@@ -19,12 +21,13 @@ export default function Topbar() {
           <span className="logo">ADMIN</span>
         </div>
         <div className="topRight">
+          <div className="topbarUser">{user.username}</div>
           <div className="topbarIconContainer">
             <button className="logoutBtn" onClick={handleClick}>
               Logout
             </button>
           </div>
-          <div className="topbarIconContainer">
+          {/* <div className="topbarIconContainer">
             <NotificationsNone />
             <span className="topIconBadge">2</span>
           </div>
@@ -33,7 +36,7 @@ export default function Topbar() {
           </div>
           <div className="topbarIconContainer">
             <Settings />
-          </div>
+          </div> */}
           <img
             className="topAvatar"
             src="http://unsplash.it/40/40"
