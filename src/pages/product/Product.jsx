@@ -1,4 +1,3 @@
-import { Publish } from "@mui/icons-material";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -14,13 +13,14 @@ import {
 import app from "../../firebase";
 import { updateProduct } from "../../redux/apiCalls";
 import { useDispatch } from "react-redux";
+import { RemoveCircle } from "@mui/icons-material";
 
 export default function Product() {
   const location = useLocation();
   const productSlug = location.pathname.split("/")[2];
   const [pStats, setPStats] = useState([]);
 
-  const product = useSelector((state) =>
+  const currProduct = useSelector((state) =>
     state.product.products.find(
       (product) => product.productSlug === productSlug
     )
@@ -47,7 +47,9 @@ export default function Product() {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await userRequest.get("orders/income?pid=" + product._id);
+        const res = await userRequest.get(
+          "orders/income?pid=" + currProduct._id
+        );
         const list = res.data.sort((a, b) => {
           return a._id - b._id;
         });
@@ -100,9 +102,46 @@ export default function Product() {
     img,
     wideImg,
   });
+  console.log("INP---", inputs);
+
   const [image, setImage] = useState(null);
+  console.log("IMG---", image);
+  const [imgUrl, setImgUrl] = useState(null);
+  console.log("imgURL--", imgUrl);
+
+  const [wideImage, setWideImage] = useState(null);
+  console.log("wideIMG--", wideImage);
+  const [wideImgUrl, setWideImgUrl] = useState(null);
+  console.log("wideURL--", wideImgUrl);
+
+  const [sliderImg, setSliderImg] = useState([]);
+  console.log("sliderIMG--", sliderImg);
+  const [sliderURL, setSliderURL] = useState([...slider]);
+  console.log("sliderURL--", sliderURL);
+
+  const handleClearCurrFiles = (e) => {
+    e.preventDefault();
+    setSliderURL([]);
+  };
+  const handleDeleteCurrFile = (e) => {
+    e.preventDefault();
+    const value = e.target.dataset.currImg;
+    setSliderURL((prev) => prev.filter((item) => item !== value));
+  };
+
+  const handleClearAddedFiles = (e) => {
+    e.preventDefault();
+    setSliderImg([]);
+  };
+  const handleDeleteAddedFile = (e) => {
+    e.preventDefault();
+    const value = e.target.dataset.addedImg;
+    setSliderImg((prev) => prev.filter((item) => item.name !== value));
+  };
+
   const [requ, setRequ] = useState({ ...requirements });
   console.log("REQU---", requ);
+
   const [genres, setGenres] = useState([...genre]);
   const dispatch = useDispatch();
 
@@ -128,22 +167,17 @@ export default function Product() {
     setGenres(e.target.value.split(","));
   };
 
-  const handleClick = (e) => {
-    e.preventDefault();
+  const handleUploadImg = (image, type) => {
+    //type - img = img, wide = wideImg, slider = slider
     const fileName = new Date().getTime() + image.name;
     const storage = getStorage(app);
     const storageRef = ref(storage, fileName);
+    console.log("storageRef", storageRef);
     const uploadTask = uploadBytesResumable(storageRef, image);
 
-    // Register three observers:
-    // 1. 'state_changed' observer, called any time the state changes
-    // 2. Error observer, called on failure
-    // 3. Completion observer, called on successful completion
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log("Upload is " + progress + "% done");
@@ -155,39 +189,59 @@ export default function Product() {
             console.log("Upload is running");
             break;
           default:
+            return;
         }
       },
-      (error) => {
-        // Handle unsuccessful uploads
-      },
+      (error) => {},
       () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const product = {
-            ...inputs,
-            img: downloadURL,
-            genre: genres,
-            requirements: requ,
-          };
-          updateProduct(product._id, product, dispatch);
+          if (type === "img") setImgUrl(downloadURL);
+          if (type === "wide") setWideImgUrl(downloadURL);
+          if (type === "slider") setSliderURL((prev) => [...prev, downloadURL]);
         });
       }
     );
   };
 
-  const navigate = useNavigate();
-
-  const handleClickNoImg = async (e) => {
+  const handleClick1 = async (e) => {
     e.preventDefault();
+    image && handleUploadImg(image, "img");
+    wideImage && handleUploadImg(wideImage, "wide");
+    sliderImg.length &&
+      sliderImg.forEach((item) => handleUploadImg(item, "slider"));
+
+    // const product = {
+    //   ...inputs,
+    //   img: imgUrl ? imgUrl : img,
+    //   wideImg: wideImgUrl ? wideImgUrl : wideImg,
+    //   slider: sliderURL,
+    //   genre: genres,
+    //   requirements: requ,
+    // };
+
+    // console.log("!!!777---", product);
+    // updateProduct(currProduct._id, product, dispatch);
+    // await navigate("/products");
+  };
+
+  const handleClick2 = async (e) => {
+    e.preventDefault();
+
     const product = {
       ...inputs,
+      img: imgUrl ? imgUrl : img,
+      wideImg: wideImgUrl ? wideImgUrl : wideImg,
+      slider: sliderURL,
       genre: genres,
-      requirements,
+      requirements: requ,
     };
-    await updateProduct(productSlug, product, dispatch);
-    await navigate(-1);
+
+    console.log("!!!777---", product);
+    updateProduct(currProduct._id, product, dispatch);
+    await navigate("/products");
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="product">
@@ -205,15 +259,15 @@ export default function Product() {
           <div className="productInfoTop">
             <img
               className="productInfoImg"
-              src={product.img}
+              src={currProduct.img}
               alt="Product img"
             />
-            <span className="productName">{product.title}</span>
+            <span className="productName">{currProduct.title}</span>
           </div>
           <div className="productInfoBottom">
             <div className="productInfoItem">
               <span className="productInfoKey">id:</span>
-              <span className="productInfoValue">{product._id}</span>
+              <span className="productInfoValue">{currProduct._id}</span>
             </div>
             <div className="productInfoItem">
               <span className="productInfoKey">продажи:</span>
@@ -224,7 +278,7 @@ export default function Product() {
             <div className="productInfoItem">
               <span className="productInfoKey">в наличии:</span>
               <span className="productInfoValue">
-                {product.inStock ? "Да" : "Нет"}
+                {currProduct.inStock ? "Да" : "Нет"}
               </span>
             </div>
           </div>
@@ -238,8 +292,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="title"
               type="text"
-              placeholder={product.title}
-              defaultValue={product.title}
+              placeholder={currProduct.title}
+              defaultValue={currProduct.title}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Slug продукта</label>
@@ -247,8 +301,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="productSlug"
               type="text"
-              placeholder={product.productSlug}
-              defaultValue={product.productSlug}
+              placeholder={currProduct.productSlug}
+              defaultValue={currProduct.productSlug}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Разработчик</label>
@@ -256,8 +310,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="developer"
               type="text"
-              placeholder={product.developer}
-              defaultValue={product.developer}
+              placeholder={currProduct.developer}
+              defaultValue={currProduct.developer}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Издатель</label>
@@ -265,8 +319,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="publisher"
               type="text"
-              placeholder={product.publisher}
-              defaultValue={product.publisher}
+              placeholder={currProduct.publisher}
+              defaultValue={currProduct.publisher}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Дата выпуска</label>
@@ -274,8 +328,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="releaseDate"
               type="text"
-              placeholder={product.releaseDate}
-              defaultValue={product.releaseDate}
+              placeholder={currProduct.releaseDate}
+              defaultValue={currProduct.releaseDate}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Платформа</label>
@@ -283,8 +337,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="platform"
               type="text"
-              placeholder={product.platform}
-              defaultValue={product.platform}
+              placeholder={currProduct.platform}
+              defaultValue={currProduct.platform}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Краткое описание</label>
@@ -292,8 +346,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="about"
               type="text"
-              placeholder={product.about}
-              defaultValue={product.about}
+              placeholder={currProduct.about}
+              defaultValue={currProduct.about}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Описание продукта</label>
@@ -301,8 +355,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="desc"
               type="text"
-              placeholder={product.desc}
-              defaultValue={product.desc}
+              placeholder={currProduct.desc}
+              defaultValue={currProduct.desc}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Жанр</label>
@@ -310,8 +364,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="genre"
               type="text"
-              placeholder={product.genre}
-              defaultValue={product.genre}
+              placeholder={currProduct.genre}
+              defaultValue={currProduct.genre}
               onChange={handleGenre}
             />
             <label className="productFormLeftLabel">Цена</label>
@@ -319,8 +373,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="price"
               type="text"
-              placeholder={product.price}
-              defaultValue={product.price}
+              placeholder={currProduct.price}
+              defaultValue={currProduct.price}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">Скидка</label>
@@ -328,8 +382,8 @@ export default function Product() {
               className="productFormLeftInput"
               name="sale"
               type="text"
-              placeholder={product.sale}
-              defaultValue={product.sale}
+              placeholder={currProduct.sale}
+              defaultValue={currProduct.sale}
               onChange={handleChange}
             />
             <label className="productFormLeftLabel">В наличии</label>
@@ -458,26 +512,100 @@ export default function Product() {
               onChange={handleLang}
             />
           </div>
+          {/* RIGHT */}
           <div className="productFormRight">
             <div className="productUpload">
+              <h4>Основное изображение</h4>
               <img
                 className="productUploadImg"
-                src={product.img}
+                src={currProduct.img}
                 alt="Upload img"
               />
-              <label htmlFor="file">
-                <Publish className="productUploadIcon" />
-              </label>
               <input
                 type="file"
-                id="file"
+                accept="image/*"
+                id="fileImg"
                 onChange={(e) => setImage(e.target.files[0])}
-                style={{ display: "none" }}
               />
             </div>
+            <div className="productUpload">
+              <h4>Широкое изображение</h4>
+              <img
+                className="productUploadImg wide"
+                src={currProduct.wideImg}
+                alt="Upload img"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                id="fileWideImg"
+                onChange={(e) => setWideImage(e.target.files[0])}
+              />
+            </div>
+            <div className="productUpload">
+              <h4>Изображения слайдера</h4>
+
+              <span>Текущие изображения</span>
+              <div className="productSliderContainer">
+                {sliderURL.map((item, i) => (
+                  <div className="productUploadImgContainer" key={item + i}>
+                    <img
+                      className="productUploadImg slider"
+                      src={item}
+                      alt="Upload img"
+                      data-curr-img={item}
+                      onClick={handleDeleteCurrFile}
+                    />
+                    <span className="productUploadIcon">
+                      <RemoveCircle />
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={handleClearCurrFiles}>Очистить текущие</button>
+
+              <span>Добавленные изображения:</span>
+              <div className="productSliderContainer">
+                {sliderImg.map((item, i) => (
+                  <div className="productUploadImgContainer" key={item + i}>
+                    <img
+                      className="productUploadImg slider"
+                      src={item}
+                      alt={item.name}
+                      data-added-img={item.name}
+                      onClick={handleDeleteAddedFile}
+                    />
+                    <span className="productUploadIcon">
+                      <RemoveCircle />
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={handleClearAddedFiles}>
+                Очистить добавленные
+              </button>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                id="filesSlider"
+                onChange={(e) =>
+                  setSliderImg((prev) => [...prev, ...e.target.files])
+                }
+              />
+            </div>
+
             <button
               className="productButton"
-              onClick={image ? handleClick : handleClickNoImg}
+              onClick={handleClick1}
+              // onClick={image ? handleClick : handleClickNoImg}
+            >
+              Загрузить изображения
+            </button>
+            <button
+              className="productButton"
+              onClick={handleClick2}
+              // onClick={image ? handleClick : handleClickNoImg}
             >
               Обновить
             </button>

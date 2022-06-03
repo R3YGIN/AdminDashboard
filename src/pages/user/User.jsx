@@ -107,6 +107,7 @@ export default function User() {
                   type="text"
                   name="username"
                   placeholder={account.username}
+                  defaultValue={account.username}
                   onChange={handleChange}
                 />
               </div>
@@ -117,6 +118,7 @@ export default function User() {
                   type="text"
                   name="email"
                   placeholder={account.email}
+                  defaultValue={account.email}
                   onChange={handleChange}
                 />
               </div>

@@ -9,10 +9,9 @@ export default function Topbar() {
   const handleClick = async (e) => {
     e.preventDefault();
     await logoutFunc(dispatch);
-    await await window.location.reload();
+    await window.location.reload();
   };
   const user = useSelector((state) => state.user.currentUser);
-  console.log(user);
 
   return (
     <div className="topbar">
