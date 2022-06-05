@@ -102,22 +102,15 @@ export default function Product() {
     img,
     wideImg,
   });
-  console.log("INP---", inputs);
 
   const [image, setImage] = useState(null);
-  console.log("IMG---", image);
   const [imgUrl, setImgUrl] = useState(null);
-  console.log("imgURL--", imgUrl);
 
   const [wideImage, setWideImage] = useState(null);
-  console.log("wideIMG--", wideImage);
   const [wideImgUrl, setWideImgUrl] = useState(null);
-  console.log("wideURL--", wideImgUrl);
 
   const [sliderImg, setSliderImg] = useState([]);
-  console.log("sliderIMG--", sliderImg);
   const [sliderURL, setSliderURL] = useState([...slider]);
-  console.log("sliderURL--", sliderURL);
 
   const handleClearCurrFiles = (e) => {
     e.preventDefault();
@@ -372,7 +365,7 @@ export default function Product() {
             <input
               className="productFormLeftInput"
               name="price"
-              type="text"
+              type="number"
               placeholder={currProduct.price}
               defaultValue={currProduct.price}
               onChange={handleChange}
@@ -381,7 +374,7 @@ export default function Product() {
             <input
               className="productFormLeftInput"
               name="sale"
-              type="text"
+              type="number"
               placeholder={currProduct.sale}
               defaultValue={currProduct.sale}
               onChange={handleChange}
@@ -507,7 +500,7 @@ export default function Product() {
               className="productFormLeftInput"
               name="languages"
               type="text"
-              placeholder={"минимальные"}
+              placeholder={"Русский, Английский"}
               defaultValue={requirements.languages}
               onChange={handleLang}
             />
@@ -518,7 +511,7 @@ export default function Product() {
               <h4>Основное изображение</h4>
               <img
                 className="productUploadImg"
-                src={currProduct.img}
+                src={imgUrl ? imgUrl : currProduct.img}
                 alt="Upload img"
               />
               <input
@@ -532,7 +525,7 @@ export default function Product() {
               <h4>Широкое изображение</h4>
               <img
                 className="productUploadImg wide"
-                src={currProduct.wideImg}
+                src={wideImgUrl ? wideImgUrl : currProduct.wideImg}
                 alt="Upload img"
               />
               <input
@@ -595,18 +588,10 @@ export default function Product() {
               />
             </div>
 
-            <button
-              className="productButton"
-              onClick={handleClick1}
-              // onClick={image ? handleClick : handleClickNoImg}
-            >
+            <button className="productButton" onClick={handleClick1}>
               Загрузить изображения
             </button>
-            <button
-              className="productButton"
-              onClick={handleClick2}
-              // onClick={image ? handleClick : handleClickNoImg}
-            >
+            <button className="productButton" onClick={handleClick2}>
               Обновить
             </button>
           </div>

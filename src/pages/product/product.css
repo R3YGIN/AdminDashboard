@@ -93,9 +93,7 @@
 
 .productFormLeftInput {
   margin-bottom: 10px;
-  border: none;
-  padding: 5px;
-  border-bottom: 1px solid gray;
+  padding: 10px;
 }
 
 .productFormLeftSelect {
