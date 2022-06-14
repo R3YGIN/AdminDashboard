@@ -1,18 +1,4 @@
 import { publicRequest, userRequest } from "../requestMethods";
-import {
-  getProductFailure,
-  getProductStart,
-  getProductSuccess,
-  deleteProductFailure,
-  deleteProductStart,
-  deleteProductSuccess,
-  updateProductFailure,
-  updateProductStart,
-  updateProductSuccess,
-  addProductFailure,
-  addProductStart,
-  addProductSuccess,
-} from "./productRedux";
 import { loginFailure, loginStart, loginSuccess, logout } from "./userRedux";
 import {
   getAccountStart,
@@ -28,6 +14,34 @@ import {
   addAccountSuccess,
   addAccountFailure,
 } from "./accountRedux";
+import {
+  getProductStart,
+  getProductSuccess,
+  getProductFailure,
+  deleteProductStart,
+  deleteProductSuccess,
+  deleteProductFailure,
+  updateProductStart,
+  updateProductSuccess,
+  updateProductFailure,
+  addProductStart,
+  addProductSuccess,
+  addProductFailure,
+} from "./productRedux";
+import {
+  getNewsStart,
+  getNewsSuccess,
+  getNewsFailure,
+  deleteNewsStart,
+  deleteNewsSuccess,
+  deleteNewsFailure,
+  updateNewsStart,
+  updateNewsSuccess,
+  updateNewsFailure,
+  addNewsStart,
+  addNewsSuccess,
+  addNewsFailure,
+} from "./newsRedux";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -53,6 +67,16 @@ export const getProducts = async (dispatch) => {
   }
 };
 
+export const getNews = async (dispatch) => {
+  dispatch(getNewsStart());
+  try {
+    const res = await publicRequest.get("news");
+    dispatch(getNewsSuccess(res.data));
+  } catch (err) {
+    dispatch(getNewsFailure());
+  }
+};
+
 export const getAccounts = async (dispatch) => {
   dispatch(getAccountStart());
   try {
@@ -70,6 +94,16 @@ export const deleteProduct = async (id, dispatch) => {
     dispatch(deleteProductSuccess(id));
   } catch (err) {
     dispatch(deleteProductFailure());
+  }
+};
+
+export const deleteNews = async (id, dispatch) => {
+  dispatch(deleteNewsStart());
+  try {
+    // const res = await userRequest.delete(`/news/${id}`);
+    dispatch(deleteNewsSuccess(id));
+  } catch (err) {
+    dispatch(deleteNewsFailure());
   }
 };
 
@@ -93,6 +127,16 @@ export const updateProduct = async (id, product, dispatch) => {
   }
 };
 
+export const updateNews = async (id, news, dispatch) => {
+  dispatch(updateNewsStart());
+  try {
+    const res = await userRequest.put(`/news/${id}`, news);
+    dispatch(updateNewsSuccess({ news }));
+  } catch (err) {
+    dispatch(updateNewsFailure());
+  }
+};
+
 export const updateAccount = async (id, account, dispatch) => {
   dispatch(updateAccountStart());
   try {
@@ -110,6 +154,16 @@ export const addProduct = async (product, dispatch) => {
     dispatch(addProductSuccess(res.data));
   } catch (err) {
     dispatch(addProductFailure());
+  }
+};
+
+export const addNews = async (news, dispatch) => {
+  dispatch(addNewsStart());
+  try {
+    const res = await userRequest.post(`/news/`, news);
+    dispatch(addNewsSuccess(res.data));
+  } catch (err) {
+    dispatch(addNewsFailure());
   }
 };
 

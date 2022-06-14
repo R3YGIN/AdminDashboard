@@ -202,19 +202,6 @@ export default function Product() {
     wideImage && handleUploadImg(wideImage, "wide");
     sliderImg.length &&
       sliderImg.forEach((item) => handleUploadImg(item, "slider"));
-
-    // const product = {
-    //   ...inputs,
-    //   img: imgUrl ? imgUrl : img,
-    //   wideImg: wideImgUrl ? wideImgUrl : wideImg,
-    //   slider: sliderURL,
-    //   genre: genres,
-    //   requirements: requ,
-    // };
-
-    // console.log("!!!777---", product);
-    // updateProduct(currProduct._id, product, dispatch);
-    // await navigate("/products");
   };
 
   const handleClick2 = async (e) => {
@@ -229,7 +216,6 @@ export default function Product() {
       requirements: requ,
     };
 
-    console.log("!!!777---", product);
     updateProduct(currProduct._id, product, dispatch);
     await navigate("/products");
   };

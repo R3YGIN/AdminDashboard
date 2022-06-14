@@ -1,16 +1,10 @@
 import {
-  AttachMoney,
-  BarChart,
-  ChatBubbleOutline,
-  DynamicFeed,
   LineStyle,
-  MailOutline,
   PermIdentity,
-  Report,
   Storefront,
+  Newspaper,
   Timeline,
   TrendingUp,
-  WorkOutline,
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import "./sidebar.css";
@@ -53,14 +47,12 @@ export default function Sidebar() {
                 Продукты
               </li>
             </NavLink>
-            {/* <li className="sidebarListItem">
-              <AttachMoney className="sidebarIcon" />
-              Операции
-            </li>
-            <li className="sidebarListItem">
-              <BarChart className="sidebarIcon" />
-              Отчеты
-            </li> */}
+            <NavLink className="link navLink" to="/news">
+              <li className="sidebarListItem">
+                <Newspaper className="sidebarIcon" />
+                Новости
+              </li>
+            </NavLink>
           </ul>
         </div>
         {/* <div className="sidebarMenu">

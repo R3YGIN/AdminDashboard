@@ -9,6 +9,9 @@ import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import Layout from "./components/Layout";
 import Login from "./pages/login/Login";
+import NewsList from "./pages/newsList/NewsList";
+import News from "./pages/news/News";
+import NewNews from "./pages/newNews/NewNews";
 
 function App() {
   const user =
@@ -36,6 +39,9 @@ function App() {
         <Route path="products" element={<ProductList />} />
         <Route path="product/:productId" element={<Product />} />
         <Route path="newproduct" element={<NewProduct />} />
+        <Route path="news" element={<NewsList />} />
+        <Route path="news/:newsId" element={<News />} />
+        <Route path="newnews" element={<NewNews />} />
       </Route>
     </Routes>
   );
