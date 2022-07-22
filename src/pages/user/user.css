@@ -148,6 +148,13 @@
   font-size: 30px;
 }
 
+.userUpdateSelect {
+  height: 40px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: white;
+}
+
 .userUpdateButton {
   border-radius: 5px;
   border: none;
@@ -156,4 +163,7 @@
   background-color: darkcyan;
   color: #fff;
   font-weight: 600;
+
+  margin-top: 20px;
+  width: 100%;
 }

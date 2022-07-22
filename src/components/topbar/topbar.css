@@ -26,6 +26,10 @@
   align-items: center;
 }
 
+.topbarUser {
+  margin-right: 1vw;
+}
+
 .topbarIconContainer {
   position: relative;
   cursor: pointer;
@@ -52,5 +56,14 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  cursor: pointer;
+}
+
+.logoutBtn {
+  background-color: #fcc7cb;
+  color: #702342;
+  border-radius: 10px;
+  border: 1px solid #702342;
+  padding: 5px;
   cursor: pointer;
 }
